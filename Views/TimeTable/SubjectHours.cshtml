@@ -1,0 +1,41 @@
+﻿@using TimeTableGenerator.ViewModel
+@model TimeTableViewModel
+<style>
+    .form-group {
+        padding-bottom: 10px !important
+    }
+</style>
+<h2>Enter Subject Hours</h2>
+<p>Total hours to allocate: @Model.InitialInput.TotalHours</p>
+
+<form asp-action="Generate" method="post">
+    <input type="hidden" asp-for="InitialInput.WorkingDays" />
+    <input type="hidden" asp-for="InitialInput.SubjectsPerDay" />
+    <input type="hidden" asp-for="InitialInput.TotalSubjects" />
+
+    @for (int i = 0; i < Model.InitialInput.TotalSubjects; i++)
+    {
+        <div class="form-group">
+            <label>Subject @(i + 1)</label>
+            <div style="display: flex;gap: 30px;">
+            <input asp-for="@Model.SubjectHours[i].SubjectName" class="form-control" placeholder="Subject Name" />
+            <input asp-for="@Model.SubjectHours[i].Hours" class="form-control" placeholder="Hours" type="number" min="0" />
+            </div>
+            <span asp-validation-for="@Model.SubjectHours[i].Hours" class="text-danger"></span>
+
+        </div>
+    }
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="text-danger">
+            @Html.ValidationSummary()
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary">Generate</button>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
